@@ -33,11 +33,11 @@ def proxyshell_check(url):
     
     try:
         with requests.get("https://{url}{payload}".format(url=url, payload=payload), allow_redirects=True, timeout=20, verify=False, headers=headers) as response:
-            
-            match = re.search(r"NT AUTHORITY\\SYSTEM", response.text)
-
-            if response.status_code == 500 and match:
-                print("[+] CVE-2021-34473 Vulnerable", url, "FQDN:",get_fqdn(url))
+            if response.status_code == 500:
+                match = re.search(r"NT AUTHORITY\\SYSTEM", response.text)
+                
+                if match:
+                    print("[+] CVE-2021-34473 Vulnerable", url, "FQDN:",get_fqdn(url))
             
     
     except Exception as e:
@@ -55,7 +55,7 @@ def thread(thread, file):
             
             if len(futures) >= thread:
                 try:
-                    for future in as_completed(futures, 30):
+                    for future in as_completed(futures, timeout=30):
 
                         if future.result() is not None:
                             print(future.result())
