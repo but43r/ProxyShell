@@ -1,9 +1,10 @@
 CVE-2021-34473 
 
 python3.8 proxyshell_scanner.py --help</br>
-usage: proxyshell_scanner.py [-h] [--thread THREAD] --file FILE</br>
+usage: proxyshell_scanner_1.py [-h] [--thread THREAD] --file FILE --output OUTPUT
 
-optional arguments:</br>
-  -h, --help       show this help message and exit</br>
-  --thread THREAD</br>
-  --file FILE</br>
+optional arguments:
+  -h, --help       show this help message and exit
+  --thread THREAD
+  --file FILE
+  --output OUTPUT
